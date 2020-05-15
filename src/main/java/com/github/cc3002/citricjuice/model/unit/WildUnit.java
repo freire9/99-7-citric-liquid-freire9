@@ -1,9 +1,9 @@
-package com.github.cc3002.citricjuice.model;
+package com.github.cc3002.citricjuice.model.unit;
 
 /**
- * This class represents a bossUnit in the game 99.7% Citric Liquid.
+ * This class represents a wildUnit in the game 99.7% Citric Liquid.
  */
-public class BossUnit extends AbstractUnit {
+public class WildUnit extends AbstractUnit {
 
     /**
      * Creates a new character.
@@ -19,7 +19,7 @@ public class BossUnit extends AbstractUnit {
      * @param evd
      *     the base evasion of the character.
      */
-    public BossUnit(final String name, final int hp, final int atk, final int def,
+    public WildUnit(final String name, final int hp, final int atk, final int def,
                     final int evd) {
         super(name, hp, atk, def, evd);
     }
@@ -31,8 +31,8 @@ public class BossUnit extends AbstractUnit {
      *      the unit who recieve the message of give an amount of his stars
      */
     @Override
-    public void winStars(IUnit unit){
-        unit.loseStarsToBossUnit(this);
+    public void winStars(IUnit unit) {
+        unit.loseStarsToWildUnit(this);
     }
 
     /**
@@ -57,8 +57,8 @@ public class BossUnit extends AbstractUnit {
     @Override
     public void loseStarsToWildUnit(WildUnit wildUnit) {
         int currentStars = this.getStars();
-        wildUnit.increaseStarsBy(currentStars/2);
-        this.reduceStarsBy(currentStars/2);
+        wildUnit.increaseStarsBy(currentStars / 2);
+        this.reduceStarsBy(currentStars / 2);
     }
 
     /**
@@ -70,8 +70,9 @@ public class BossUnit extends AbstractUnit {
     @Override
     public void loseStarsToBossUnit(BossUnit bossUnit) {
         int currentStars = this.getStars();
-        bossUnit.increaseStarsBy(currentStars/2);
-        this.reduceStarsBy(currentStars/2);
+        bossUnit.increaseStarsBy(currentStars / 2);
+        this.reduceStarsBy(currentStars / 2);
+
     }
 
     /**
@@ -82,47 +83,47 @@ public class BossUnit extends AbstractUnit {
      */
     @Override
     public void winVictory(IUnit unit) {
-        unit.giveVictoryToBossUnit(this);
+        unit.giveVictoryToWildUnit(this);
     }
 
     /**
-     * increase the amount of victories of the player unit in 3
+     * increase the amount of victories of the player unit in 1
      *
      * @param playerUnit
      *      the player unit who recieve the victory
      */
     @Override
     public void giveVictoryToPlayerUnit(PlayerUnit playerUnit) {
-        playerUnit.increaseVictoriesBy(3);
+        playerUnit.increaseVictoriesBy(1);
     }
 
     /**
-     * increase the amount of victories of the wild unit in 3
+     * increase the amount of victories of the wild unit in 1
      *
      * @param wildUnit
      *      the wild unit who recieve the victory
      */
     @Override
     public void giveVictoryToWildUnit(WildUnit wildUnit){
-        wildUnit.increaseVictoriesBy(3);
+        wildUnit.increaseVictoriesBy(1);
     }
 
     /**
-     * increase the amount of victories of the boss unit in 3
+     * increase the amount of victories of the boss unit in 1
      *
      * @param bossUnit
      *      the boss unit who recieve the victory
      */
     @Override
     public void giveVictoryToBossUnit(BossUnit bossUnit){
-        bossUnit.increaseVictoriesBy(3);
+        bossUnit.increaseVictoriesBy(1);
     }
 
     /**
      * Returns a copy of this character.
      */
-    public BossUnit copy() {
-        return new BossUnit(this.getName(), this.getMaxHP(), this.getAtk(), this.getDef(), this.getEvd());
+    public WildUnit copy() {
+        return new WildUnit(this.getName(), this.getMaxHP(), this.getAtk(), this.getDef(), this.getEvd());
     }
 
     @Override
@@ -130,18 +131,17 @@ public class BossUnit extends AbstractUnit {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BossUnit)) {
+        if (!(o instanceof WildUnit)) {
             return false;
         }
-        final BossUnit bossUnit = (BossUnit) o;
-        return getMaxHP() == bossUnit.getMaxHP() &&
-                getAtk() == bossUnit.getAtk() &&
-                getDef() == bossUnit.getDef() &&
-                getEvd() == bossUnit.getEvd() &&
-                getNormaLevel() == bossUnit.getNormaLevel() &&
-                getStars() == bossUnit.getStars() &&
-                getCurrentHP() == bossUnit.getCurrentHP() &&
-                getName().equals(bossUnit.getName());
+        final WildUnit wildUnit = (WildUnit) o;
+        return getMaxHP() == wildUnit.getMaxHP() &&
+                getAtk() == wildUnit.getAtk() &&
+                getDef() == wildUnit.getDef() &&
+                getEvd() == wildUnit.getEvd() &&
+                getNormaLevel() == wildUnit.getNormaLevel() &&
+                getStars() == wildUnit.getStars() &&
+                getCurrentHP() == wildUnit.getCurrentHP() &&
+                getName().equals(wildUnit.getName());
     }
-
 }
