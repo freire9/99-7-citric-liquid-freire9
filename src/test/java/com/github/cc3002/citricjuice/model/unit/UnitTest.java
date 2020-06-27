@@ -29,6 +29,7 @@ public class UnitTest {
   private WildUnit napoleon;
   private BossUnit freezer;
   private BossUnit demonKing;
+
   @BeforeEach
   public void setUp() {
     suguri = new PlayerUnit(PLAYER1_NAME, 4, 1, -1, 2);

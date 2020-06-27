@@ -3,7 +3,7 @@ package com.github.cc3002.citricjuice.model.unit;
 /**
  * This class represents a wildUnit in the game 99.7% Citric Liquid.
  */
-public class WildUnit extends AbstractUnit {
+public class WildUnit extends AbstractEnemy {
 
     /**
      * Creates a new character.
@@ -139,7 +139,6 @@ public class WildUnit extends AbstractUnit {
                 getAtk() == wildUnit.getAtk() &&
                 getDef() == wildUnit.getDef() &&
                 getEvd() == wildUnit.getEvd() &&
-                getNormaLevel() == wildUnit.getNormaLevel() &&
                 getStars() == wildUnit.getStars() &&
                 getCurrentHP() == wildUnit.getCurrentHP() &&
                 getName().equals(wildUnit.getName());

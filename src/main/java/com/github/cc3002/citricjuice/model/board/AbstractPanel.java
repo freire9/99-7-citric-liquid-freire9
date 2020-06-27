@@ -3,12 +3,11 @@ package com.github.cc3002.citricjuice.model.board;
 import com.github.cc3002.citricjuice.model.unit.PlayerUnit;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public abstract class AbstractPanel implements IPanel {
     private final Set<IPanel> nextPanels = new HashSet<>();
+    private final List<PlayerUnit> playersOnPanel= new ArrayList<>();
     private final int id;
 
 
@@ -42,7 +41,14 @@ public abstract class AbstractPanel implements IPanel {
      * @param IPanel
      *     the panel to be added.
      */
-    public void addNextPanel(final IPanel IPanel) { nextPanels.add(IPanel);
+    public void addNextPanel(final IPanel IPanel) {
+        if (IPanel.equals(this)){
+
+        }
+        else{
+            nextPanels.add(IPanel);
+        }
+
     }
 
 
@@ -55,6 +61,36 @@ public abstract class AbstractPanel implements IPanel {
      * return the id of the panel
      */
     public int getId() { return id;}
+
+
+    /**
+     * return the list that contains the players in this panel
+     *
+     * @return List<PlayerUnit>
+     */
+    public List<PlayerUnit> getPlayers() {
+        return playersOnPanel;
+    }
+
+
+    /**
+     *add a player unit to the panel list of players
+     *
+     * @param playerUnit
+     */
+    public void addPlayerOnPanel(PlayerUnit playerUnit) {
+        playersOnPanel.add(playerUnit);
+    }
+
+
+    /**
+     * remove player unit from the panel list of players
+     *
+     * @param playerUnit
+     */
+    public void removePlayerOnPanel(PlayerUnit playerUnit){
+        playersOnPanel.remove(playerUnit);
+    }
 
 
 }

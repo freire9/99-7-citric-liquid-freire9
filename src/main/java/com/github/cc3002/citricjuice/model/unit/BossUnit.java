@@ -3,7 +3,7 @@ package com.github.cc3002.citricjuice.model.unit;
 /**
  * This class represents a bossUnit in the game 99.7% Citric Liquid.
  */
-public class BossUnit extends AbstractUnit {
+public class BossUnit extends AbstractEnemy {
 
     /**
      * Creates a new character.
@@ -138,7 +138,6 @@ public class BossUnit extends AbstractUnit {
                 getAtk() == bossUnit.getAtk() &&
                 getDef() == bossUnit.getDef() &&
                 getEvd() == bossUnit.getEvd() &&
-                getNormaLevel() == bossUnit.getNormaLevel() &&
                 getStars() == bossUnit.getStars() &&
                 getCurrentHP() == bossUnit.getCurrentHP() &&
                 getName().equals(bossUnit.getName());
