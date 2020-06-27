@@ -11,7 +11,6 @@ public abstract class AbstractUnit implements IUnit {
     protected int atk;
     protected int def;
     protected int evd;
-    private int normaLevel;
     private int stars;
     private int currentHP;
     private int victories;
@@ -38,9 +37,9 @@ public abstract class AbstractUnit implements IUnit {
         this.atk = atk;
         this.def = def;
         this.evd = evd;
-        normaLevel = 1;
         random = new Random();
         victories=0;
+        stars=0;
     }
 
     /**
@@ -184,7 +183,7 @@ public abstract class AbstractUnit implements IUnit {
     }
 
     /**
-            * Reduces this player's star count by a given amount.
+            * Reduces this unit star count by a given amount.
             * <p>
    * The star count will must always be greater or equal to 0
             */
@@ -193,14 +192,14 @@ public abstract class AbstractUnit implements IUnit {
     }
 
     /**
-     * Increases this player's star count by an amount.
+     * Increases this unit star count by an amount.
      */
     public void increaseStarsBy(final int amount) {
         stars += amount;
     }
 
     /**
-     * Returns this player's star count.
+     * Returns this unit star count.
      */
     public int getStars() {
         return stars;
@@ -269,19 +268,6 @@ public abstract class AbstractUnit implements IUnit {
         return evd;
     }
 
-    /**
-     * Returns the current norma level
-     */
-    public int getNormaLevel() {
-        return normaLevel;
-    }
-
-    /**
-     * Performs a norma clear action; the {@code norma} counter increases in 1.
-     */
-    public void normaClear() {
-        normaLevel++;
-    }
 
     /**
      * Returns the current hit points of the character.
@@ -298,4 +284,6 @@ public abstract class AbstractUnit implements IUnit {
     public void setCurrentHP(final int newHP) {
         this.currentHP = Math.max(Math.min(newHP, maxHP), 0);
     }
+
+
 }

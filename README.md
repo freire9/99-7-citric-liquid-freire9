@@ -12,6 +12,8 @@ Daniel Freire Fernández
 
 #Resumen
 
+#Tarea1
+
 #Unidades:
 Se implementa una jerarquía de clases en donde se define una interfaz para las unidades, la cual es implementada por una clase abstracta "AbstractUnit", en donde están la gran mayoría de los métodos que usan las unidades (PlayerUnit, WildUnit, BossUnit)
 En esta clase abstracta se definen tanto métodos abstractos y no abstractos.
@@ -26,3 +28,15 @@ Se implementa una jerarquía de clases en donde se define una interfaz para los 
 en donde están los métodos usados por los paneles (NeutralPanel, HomePanel,BonusPanel,DropPanel).
 En está clase se define el constructor de los paneles, los cuales requieren solo de un ID. Los paneles que extienden la clase abstracta hacen uso de este constructor a través de "super(id)"".
 Cada panel hace override al metodo de activación de paneles, por lo tanto un jugador al caer en un panel, dependiendo de que tipo de panel sea, usará su método de activación y activará los efectos según que tipo de panel sea.
+
+
+
+#Tare2
+Se implementa la clase controller, la cual cumple con todos los requisitos pedidos en la entrega parcial 1, es decir, es capáz de manejar en general casi toda la lógica del juego, desde la creación de unidades de jugadores como enemigos, mover a un jugador y saber cuando detenerlo, esto es cuando se encuentra con otro jugador, cuando pasa por su propio home panel o cuando al panel al que llega tiene más de un panel siguiente.
+Cuenta también con métodos para obtener el capítulo actual del juego, finalizar el turno.
+Es capáz de manejar toda la lógica de las unidades y de los paneles. Además de contar con listas para registrar los jugadores y todos los paneles del tablero, de manera de poder acceder a ellos cuando se necesite.
+También es capaz de hacer normaCheck, es decir, cuando un jugador cae en un panel home o pasa por el suyo y decide detenerse, se procede a verificar si cumple con las condiciones necesarias para realizar una norma clear. Esto lo hace de momento solo vía el método move, al momento de detenerse en un panel home.
+En esta clase se implementa el patrón de diseño observer, en donde se tiene una clase adicional normaHandler, la cual es listener de cambios en el parámetro normaLever de los jugadores, con lo cual cuando existe un cambio, el jugador le notifica a la clase normaHandler, la cual a su vez envía un mensaje al controler con el valor al cual fue actualiada la norma del jugador, con lo cual el controler pasa ese valor por un filtro (lo compara con 6), y si pasa, quiere decir que ese jugador a ganado.
+Para la entrega parcial 2 no se alcanzó a terminar la implementación, sin embargo se alcanzó a implementar algunas clases las cuales representan algunas (no todas) las fases dentro del turno de cada jugador. 
+Para esto se pretendía utilizar el patrón de diseño state pattern, utiliando como contexto a la clase controller, una clase StateTurn, y sus clases hijas que la extienden las cuales son las que representan las fases de los turnos.
+ 

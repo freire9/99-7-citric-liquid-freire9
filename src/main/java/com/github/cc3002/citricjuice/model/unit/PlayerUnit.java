@@ -1,5 +1,11 @@
 package com.github.cc3002.citricjuice.model.unit;
 
+import com.github.cc3002.citricjuice.model.NormaGoal;
+import com.github.cc3002.citricjuice.model.board.IPanel;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 /**
  * This class represents a playerUnit in the game 99.7% Citric Liquid.
  *
@@ -10,6 +16,12 @@ package com.github.cc3002.citricjuice.model.unit;
  * @since 1.0
  */
 public class PlayerUnit extends AbstractUnit{
+  public int winner=0;
+  private int normaLevel=1;
+  private NormaGoal normaGoal = NormaGoal.STARS;
+  private IPanel actualPanel;
+  private IPanel homePanel;
+  private PropertyChangeSupport normaNotification = new PropertyChangeSupport(this);
 
   /**
    * Creates a new character.
@@ -127,6 +139,24 @@ public class PlayerUnit extends AbstractUnit{
   }
 
 
+  /**
+   * Returns the current norma level
+   */
+  public int getNormaLevel() {
+    return normaLevel;
+  }
+
+  /**
+   * Performs a norma clear action; the {@code norma} counter increases in 1.
+   */
+  public void normaClear() {
+    int actualNorma= this.getNormaLevel();
+    normaLevel++;
+    int newNorma= this.getNormaLevel();
+    normaNotification.firePropertyChange("NormaIncrease", actualNorma, newNorma);
+  }
+
+
   @Override
   public boolean equals(final Object o) {
     if (this == o) {
@@ -185,4 +215,71 @@ public class PlayerUnit extends AbstractUnit{
   }
 
 
+  /**
+   * set the norma goal of the player
+   *
+   * @param normaGoal
+   */
+  public void setNormaGoal(NormaGoal normaGoal){
+    this.normaGoal=normaGoal; }
+
+
+  /**
+   * return the norma goal of the player
+   *
+   * @return NormaGoal
+   */
+  public NormaGoal getNormaGoal() {
+    return normaGoal;
+  }
+
+
+  /**
+   *return the actual panel of the player
+   *
+   * @return IPanel
+   */
+  public IPanel getActualPanel() {
+    return actualPanel;
+  }
+
+
+  /**
+   * set actualPanels as the actual panel of the player
+   *
+   * @param actualPanel
+   */
+  public void setActualPanel(IPanel actualPanel) {
+    this.actualPanel = actualPanel;
+  }
+
+
+  /**
+   * return de HomePanel param of the player
+   *
+   * @return IPanel
+   */
+  public IPanel getHomePanel() {
+    return homePanel;
+  }
+
+
+  /**
+   * set homePanel as the HomePanel param of the player
+   *
+   * @param homePanel
+   */
+  public void setHomePanel(IPanel homePanel) {
+    this.homePanel = homePanel;
+  }
+
+
+  /**
+   * add a listener to normaNotification
+   *
+   * @param normaHandler
+   */
+  public void addNormaListener(PropertyChangeListener normaHandler) {
+    normaNotification.addPropertyChangeListener(normaHandler);
+  }
 }
