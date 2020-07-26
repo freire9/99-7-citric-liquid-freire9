@@ -1,5 +1,8 @@
 package com.github.cc3002.citricjuice.controller;
 
+import com.github.cc3002.citricjuice.controller.states.InvalidActionException;
+import com.github.cc3002.citricjuice.controller.states.TurnStart;
+import com.github.cc3002.citricjuice.controller.states.TurnState;
 import com.github.cc3002.citricjuice.model.NormaGoal;
 import com.github.cc3002.citricjuice.model.board.*;
 import com.github.cc3002.citricjuice.model.unit.BossUnit;
@@ -21,13 +24,28 @@ public class GameController {
     private List<Integer> winsList= new ArrayList<>();
     private NormaHandler normaHandler= new NormaHandler(this);
     private TurnState turnState;
-
+    private int numberToRecovery;
+    private int rollNumber=0;
+    private boolean meetPlayer;
+    private boolean meetHomePanel;
+    private boolean meetMultPanels;
+    private boolean wantFight;
+    private boolean wantStopHome;
+    private boolean wantToPlayCard;
+    private PlayerUnit actualPanelPlayer;
+    private int numberOfPlayersToFight;
+    private PlayerUnit actualPlayerToBattle;
+    private List<PlayerUnit> playersToFight;
+    private int numberOfPanelChoosen;
+    private boolean hasntRoll =true;
+    private boolean hasntTryToRecovery=true;
 
     /**
      * Creates a new game controller
      */
     public GameController(){
         this.setTurnState(new TurnStart());
+        this.numberToRecovery=6;
 
         starList.add(10);
         starList.add(30);
@@ -51,6 +69,9 @@ public class GameController {
         turnState.setGameController(this);
     }
 
+    public String getCurrentStateName() {
+        return turnState.toString();
+    }
 
     /**
      * creates a new BonusPanel and add it to the panels list
@@ -210,31 +231,36 @@ public class GameController {
      * method that moves the player across the panels of the board stopping in a few speciffics situation
      */
     public void movePlayer(){
+
+        IPanel actualPanel = turnOwner.getActualPanel();
+        actualPanel.removePlayerOnPanel(turnOwner);
+        IPanel nextPanel = turnOwner.getActualPanel().getNextPanels().iterator().next();
+        turnOwner.setActualPanel(nextPanel);
+        nextPanel.addPlayerOnPanel(turnOwner);
             //pasa por su home panel
             if (turnOwner.getActualPanel().equals(turnOwner.getHomePanel())){
                 normaCheck(turnOwner);
+                meetHomePanel=true;
                 return;
             }
             //pasa por un panel con algun jugador en el
-            if (turnOwner.getActualPanel().getPlayers().size()>1){
+            else if (turnOwner.getActualPanel().getPlayers().size()>1){
                 turnOwner.getActualPanel().activatedBy(turnOwner);
+                meetPlayer=true;
+                numberOfPlayersToFight=turnOwner.getActualPanel().getPlayers().size()-1;
                 return;
             }
             //cae en un panel que tiene mas de un panel siguiente
-            if(turnOwner.getActualPanel().getNextPanels().size()>1){
+            else if(turnOwner.getActualPanel().getNextPanels().size()>1){
                 turnOwner.getActualPanel().activatedBy(turnOwner);
+                meetMultPanels=true;
                 return;
             }
 
-            if (!turnOwner.getActualPanel().getNextPanels().iterator().hasNext()){
+            else if (!turnOwner.getActualPanel().getNextPanels().iterator().hasNext()){
                 return;
             }
-            IPanel actualPanel = turnOwner.getActualPanel();
-            actualPanel.removePlayerOnPanel(turnOwner);
-            IPanel nextPanel = turnOwner.getActualPanel().getNextPanels().iterator().next();
-            turnOwner.setActualPanel(nextPanel);
-            nextPanel.addPlayerOnPanel(turnOwner);
-            this.movePlayer();
+
     }
 
 
@@ -301,8 +327,17 @@ public class GameController {
         setTurnOwner(players.get(turnoNumero));
         if(turnoNumero==0){
             chapter++;
+            numberToRecovery--;
         }
-
+        meetPlayer=false;
+        meetHomePanel=false;
+        meetMultPanels=false;
+        wantFight =false;
+        wantStopHome=false;
+        wantToPlayCard=false;
+        rollNumber=0;
+        hasntRoll=true;
+        hasntTryToRecovery=true;
     }
 
 
@@ -354,4 +389,375 @@ public class GameController {
             turnOwner.winner=1;
         }
     }
+
+    /**
+     * method to recover the hp of the player
+     */
+    public void recovery() {
+        if (rollNumber>=numberToRecovery){
+            int maxHp=turnOwner.getMaxHP();
+            turnOwner.setCurrentHP(maxHp);
+            turnOwner.setKo(false);
+        }
+        hasntRoll=true;
+    }
+
+
+    /**
+     * method that trigger all the recovery related methods
+     */
+    public void tryToRecovery() {
+        try {
+            turnState.recovery();
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the turn start related methods
+     */
+    public void tryToStart() {
+        try {
+            turnState.start();
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger the roll of the dice
+     */
+    public void tryToRoll() {
+        try {
+            turnState.roll();
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the movement related methods
+     */
+    public void tryToMove(){
+        try {
+            turnState.move();
+        } catch (InvalidActionException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the end turn related methods
+     */
+    public void tryToEnd(){
+        try {
+            turnState.end();
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the decide path related methods
+     *
+     * @param i : decition number
+     */
+    public void tryToDecidePath(int i){
+        try {
+            numberOfPanelChoosen=i;
+            turnState.decidePath();
+        }catch (InvalidActionException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the decide fight related methods
+     *
+     * @param i : decition number
+     */
+    public void tryToDecideFight(int i){
+        try {
+            if(i==0){
+                wantFight=false;
+            }
+            else{
+                wantFight=true;
+            }
+            turnState.decideFightOrNot();
+        }catch (InvalidActionException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the battle related methods
+     */
+    public void tryToBattle(){
+        try {
+            turnState.battle();
+        }catch (InvalidActionException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * method that trigger all the stop at home related methods
+     *
+     * @param i : decition number
+     */
+    public void tryToStopAtHome(int i){
+        try {
+            if(i==0){
+                wantStopHome=false;
+            }
+            else {
+                wantStopHome=true;
+            }
+            turnState.decideToStopHome();
+        }catch (InvalidActionException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * method to roll the dice
+     */
+    public void rollDice() {
+        rollNumber=turnOwner.roll();
+        hasntRoll =false;
+    }
+
+    /**
+     * getter for the roll number
+     *
+     * @return int
+     */
+    public int getRollNumber() {
+        return rollNumber;
+    }
+
+    /**
+     * getter for the wantFight parameter
+     *
+     * @return boolean
+     */
+    public boolean getWantFight() {
+        return wantFight;
+    }
+
+    /**
+     * getter for the get meetMultPanels parameter
+     *
+     * @return boolean
+     */
+    public boolean getMeetMultPanels() {
+        return meetMultPanels;
+    }
+
+    /**
+     * getter for the meetHomePanel parameter
+     *
+     * @return boolean
+     */
+    public boolean getMeetHomePanel() {
+        return meetHomePanel;
+    }
+
+    /**
+     * getter for the meetPlayer parameter
+     *
+     * @return boolean
+     */
+    public boolean getMeetPlayer() {
+        return meetPlayer;
+    }
+
+    /**
+     * method to save the roll of the dice
+     *
+     * @param number the roll dice
+     */
+    public void setRollNumber(int number) {rollNumber=number;
+    }
+
+    /**
+     * getter fot the wantStopHome parameter
+     *
+     * @return boolean
+     */
+    public boolean getWantStopHome() {
+        return wantStopHome;
+    }
+
+    /**
+     * return the numbers of players availables to fight in a panel
+     *
+     * @return int
+     */
+    public int getNumberOfPlayersToFight() {return numberOfPlayersToFight;
+    }
+
+    /**
+     * method to handle the battle between units
+     */
+    //FALTA
+    public void battlePlayer() {
+        for(PlayerUnit playersInPanel : turnOwner.getActualPanel().getPlayers()){
+            playersToFight.add(playersInPanel);
+        }
+        actualPlayerToBattle= playersToFight.get(0);
+        turnOwner.attack(actualPanelPlayer);
+        //actualPlayerToBattle.attack(actualPanelPlayer);
+        //no contrataque
+
+    }
+
+    /**
+     * method to decide the path to go between two options of panels
+     */
+    //implementacion para panel con maximo 2 paneles siguientes
+    public void decidePathToGo() {
+        if(rollNumber>0){
+            List<IPanel> list1=new ArrayList<>();
+            List<IPanel> list2=new ArrayList<>();
+
+            for(IPanel nextPanel:turnOwner.getActualPanel().getNextPanels()){
+                list1.add(nextPanel);
+            }
+            if (list1.get(0).getId() < list1.get(1).getId()){
+                list2.add(list1.get(0));
+                list2.add(list1.get(1));
+            }
+            else {
+                list2.add(list1.get(1));
+                list2.add(list1.get(0));
+            }
+            IPanel actualPanel = turnOwner.getActualPanel();
+            actualPanel.removePlayerOnPanel(turnOwner);
+            turnOwner.setActualPanel(list1.get(numberOfPanelChoosen));
+            list1.get(numberOfPanelChoosen).addPlayerOnPanel(turnOwner);
+            rollNumber--;
+        }
+    }
+
+    /**
+     * method to increase the turn owner stars
+     *
+     * @param i : starsQuantity
+     */
+    public void increaseCurrentPlayersStars(int i) {
+        turnOwner.increaseStarsBy(i);
+    }
+
+    /**
+     * getter fot the wantToPlayCard parameter
+     *
+     * @return boolean
+     */
+    public boolean getWantToPlayCard() {return wantToPlayCard;
+    }
+
+    /**
+     * return the playerUnit that is going to be attacked
+     *
+     * @return PlayerUnit
+     */
+    public PlayerUnit getActualPlayerToBattle() {return actualPlayerToBattle;
+    }
+
+    /**
+     * setter for the numberOfPanelChoosen parameter
+     * @param numberOfPanelChoosen
+     */
+    public void setNumberOfPanelChoosen(int numberOfPanelChoosen) {
+        this.numberOfPanelChoosen = numberOfPanelChoosen;
+    }
+
+    /**
+     * setter for the numberOfPlayersToFight parameter
+     *
+     * @param i : numbers of players
+     */
+    public void setNumberOfPlayersToFight(int i) {numberOfPlayersToFight=i;
+    }
+
+    /**
+     * return the name of the turn owner
+     *
+     * @return String
+     */
+    public String getTurnOwnerName() {
+        return turnOwner.getName();
+    }
+
+    /**
+     * setter for the wantToFight parameter
+     *
+     * @param b : decition boolean
+     */
+    public void setWantToFight(boolean b) {wantFight=b;
+    }
+
+    /**
+     * setter fot the meetPlayer parameter
+     *
+     * @param b boolean
+     */
+    public void setMeetPlayer(boolean b) {meetPlayer=b;
+    }
+
+    /**
+     * getter for the hasntRoll parameter
+     *
+     * @return boolean
+     */
+    public boolean getHasntRoll() {
+        return hasntRoll;
+    }
+
+    /**
+     * setter for the hasntRoll parameter
+     *
+     * @param b boolean
+     */
+    public void setHasntRoll(boolean b){
+        hasntRoll =b;}
+
+    /**
+     * getter for the hasntTryToRecovery parameter
+     *
+     * @return boolean
+     */
+    public boolean getHasntTryToRecovery() {return hasntTryToRecovery;
+    }
+
+    /**
+     * getter for the numberToRecovery parameter
+     *
+     * @return int
+     */
+    public int getNumberToRecovery(){
+        return numberToRecovery;
+    }
+
+    /**
+     * setter for the meetHomePanel parameter
+     *
+     * @param b boolean
+     */
+    public void setMeetHomePanel(boolean b) {meetHomePanel=b;
+    }
+
+    /**
+     * setter for the meetMultPanels parameter
+     *
+     * @param b boolean
+     */
+    public void setMeetMultPanels(boolean b) {meetMultPanels=b;
+    }
 }
+
+

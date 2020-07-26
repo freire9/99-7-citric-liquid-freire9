@@ -98,7 +98,9 @@ public class GameControllerTest {
         gameController.setNextPanel(panel1,panel2);
         gameController.setNextPanel(panel2,panel3);
         gameController.setTurnOwner(pelos);
-        gameController.movePlayer();
+        for(int i=0;i<2;i++){
+            gameController.movePlayer();
+        }
         assertEquals(pelos,gameController.getTurnOwner());
         assertEquals(panel3,pelos.getActualPanel());
     }

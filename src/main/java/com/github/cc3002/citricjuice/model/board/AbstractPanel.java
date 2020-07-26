@@ -52,10 +52,10 @@ public abstract class AbstractPanel implements IPanel {
     }
 
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNextPanels(), getClass());
-    }
+    //@Override
+    //public int hashCode() {
+      //  return Objects.hash(getId(), getNextPanels(), getClass());
+    //}
 
     /**
      * return the id of the panel
@@ -91,7 +91,6 @@ public abstract class AbstractPanel implements IPanel {
     public void removePlayerOnPanel(PlayerUnit playerUnit){
         playersOnPanel.remove(playerUnit);
     }
-
 
 }
 

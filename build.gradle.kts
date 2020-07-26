@@ -8,7 +8,7 @@ plugins {
 }
 
 application {
-  mainClassName = "$moduleName/com.github.cc3002.citricliquid.gui.JavaFXHelloWorld"
+  mainClassName = "$moduleName/com.github.cc3002.citricliquid.gui.CitricLiquid"
 }
 
 group = "com.github.cc3002"
