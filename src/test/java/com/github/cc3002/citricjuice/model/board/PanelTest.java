@@ -1,6 +1,6 @@
 package com.github.cc3002.citricjuice.model.board;
 
-import com.github.cc3002.citricjuice.model.Player;
+import com.github.cc3002.citricjuice.model.unit.PlayerUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * test suite for the panels of the game
+ *
  * @author <a href="mailto:ignacio.slater@ug.uchile.cl">Ignacio Slater M.</a>.
+ * @author Daniel Freire Fernández
  * @version 1.0.6-rc.1
  * @since 1.0
  */
@@ -22,42 +24,53 @@ class PanelTest {
   private final static int BASE_ATK = 1;
   private final static int BASE_DEF = -1;
   private final static int BASE_EVD = 2;
-  private Panel testHomePanel;
-  private Panel testNeutralPanel;
-  private Panel testBonusPanel;
-  private Panel testDropPanel;
-  private Panel testEncounterPanel;
-  private Panel testBossPanel;
-  private Player suguri;
+  private HomePanel testHomePanel;
+  private NeutralPanel testNeutralPanel;
+  private BonusPanel testBonusPanel;
+  private DropPanel testDropPanel;
+
+  //private Panel testEncounterPanel;
+  //private Panel testBossPanel;
+  private PlayerUnit suguri;
   private long testSeed;
 
   @BeforeEach
   public void setUp() {
-    testBonusPanel = new Panel(PanelType.BONUS);
-    testBossPanel = new Panel(PanelType.BOSS);
-    testDropPanel = new Panel(PanelType.DROP);
-    testEncounterPanel = new Panel(PanelType.ENCOUNTER);
-    testHomePanel = new Panel(PanelType.HOME);
-    testNeutralPanel = new Panel(PanelType.NEUTRAL);
+    testBonusPanel = new BonusPanel(10);
+    //testBossPanel = new Panel(PanelType.BOSS);
+    testDropPanel = new DropPanel(20);
+    //testEncounterPanel = new Panel(PanelType.ENCOUNTER);
+    testHomePanel = new HomePanel(30);
+    testNeutralPanel = new NeutralPanel(40);
     testSeed = new Random().nextLong();
-    suguri = new Player(PLAYER_NAME, BASE_HP, BASE_ATK, BASE_DEF, BASE_EVD);
+    suguri = new PlayerUnit(PLAYER_NAME, BASE_HP, BASE_ATK, BASE_DEF, BASE_EVD);
   }
 
   @Test
   public void constructorTest() {
-    assertEquals(PanelType.BONUS, testBonusPanel.getType());
-    assertEquals(PanelType.BOSS, testBossPanel.getType());
-    assertEquals(PanelType.DROP, testDropPanel.getType());
-    assertEquals(PanelType.ENCOUNTER, testEncounterPanel.getType());
-    assertEquals(PanelType.HOME, testHomePanel.getType());
-    assertEquals(PanelType.NEUTRAL, testNeutralPanel.getType());
+    assertEquals(new BonusPanel(10) , testBonusPanel);
+    //assertEquals(PanelType.BOSS, testBossPanel.getType());
+    assertEquals(new DropPanel(20), testDropPanel);
+  //  assertEquals(PanelType.ENCOUNTER, testEncounterPanel.getType());
+    assertEquals(new HomePanel(30), testHomePanel);
+    assertEquals(new NeutralPanel(40), testNeutralPanel);
+  }
+
+  @Test
+  public void getIdTest(){
+    assertEquals(new BonusPanel(10).getId() , testBonusPanel.getId());
+    //assertEquals(PanelType.BOSS, testBossPanel.getType());
+    assertEquals(new DropPanel(20).getId(), testDropPanel.getId());
+    //  assertEquals(PanelType.ENCOUNTER, testEncounterPanel.getType());
+    assertEquals(new HomePanel(30).getId(), testHomePanel.getId());
+    assertEquals(new NeutralPanel(40).getId(), testNeutralPanel.getId());
   }
 
   @Test
   public void nextPanelTest() {
     assertTrue(testNeutralPanel.getNextPanels().isEmpty());
-    final var expectedPanel1 = new Panel(PanelType.NEUTRAL);
-    final var expectedPanel2 = new Panel(PanelType.NEUTRAL);
+    final var expectedPanel1 = new NeutralPanel(10);
+    final var expectedPanel2 = new NeutralPanel(20);
 
     testNeutralPanel.addNextPanel(expectedPanel1);
     assertEquals(1, testNeutralPanel.getNextPanels().size());
