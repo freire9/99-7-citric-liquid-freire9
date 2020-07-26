@@ -37,8 +37,8 @@ public class PlayerUnit extends AbstractUnit{
    * @param evd
    *     the base evasion of the character.
    */
-  public PlayerUnit(final String name, final int hp, final int atk, final int def,
-                    final int evd) { super(name, hp, atk, def, evd);
+  public PlayerUnit(final String name, final int hp, final int atk, final int def, final int evd) {
+    super(name, hp, atk, def, evd);
   }
 
   /**

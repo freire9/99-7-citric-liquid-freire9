@@ -15,6 +15,7 @@ public abstract class AbstractUnit implements IUnit {
     private int currentHP;
     private int victories;
     private int reactionNumber;
+    private boolean ko;
 
     /**
      * Creates a new character.
@@ -286,4 +287,9 @@ public abstract class AbstractUnit implements IUnit {
     }
 
 
+    public boolean getKo() {
+        return ko;
+    }
+
+    public void setKo(boolean isKo){ko=isKo;}
 }
